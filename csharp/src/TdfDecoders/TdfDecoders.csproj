@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;net10.0</TargetFrameworks>
+    <AssemblyName>TdfDecoders</AssemblyName>
+    <RootNamespace>TdfDecoders</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>TdfDecoders</PackageId>
+    <Description>Reusable binary byte-block decoding helpers for larger applications.</Description>
+    <Authors>Jordan Yates</Authors>
+    <Company>Embeint</Company>
+    <Copyright>2026 Embeint Holdings Pty Ltd</Copyright>
+    <RepositoryUrl>https://github.com/Embeint/tdf-decoders</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/Embeint/tdf-decoders</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageTags>binary;decoder;dictionary;tdf</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../../generated/TdfDecoders.cs" Link="Generated/TdfDecoders.cs" />
+    <None Include="../../README.md" Pack="true" PackagePath="" />
+    <None Include="../../../LICENSE.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+</Project>

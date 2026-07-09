@@ -1,0 +1,52 @@
+{
+  "format": "tdf-decoder-reference-v1",
+  "fixture": "extension_tdfs.bin",
+  "byteLength": 31,
+  "sha256": "fdb2ee3bbae6d577e6dc492a2a17341d646db70d38817241dc7ec9c6aa57e632",
+  "success": true,
+  "readings": [
+    {
+      "id": 1025,
+      "name": "UUID_REPORT",
+      "rawDataHex": "000102030405060708090a0b0c0d0e0fd8",
+      "timestamp": null,
+      "period": null,
+      "index": null,
+      "decodedPayload": [
+        {
+          "type": "UuidReport",
+          "fields": {
+            "uuid": "000102030405060708090a0b0c0d0e0f",
+            "rssi": -40
+          }
+        }
+      ]
+    },
+    {
+      "id": 1026,
+      "name": "EXTENSION_STRUCT",
+      "rawDataHex": "05060708",
+      "timestamp": null,
+      "period": null,
+      "index": null,
+      "decodedPayload": [
+        {
+          "type": "ExtensionStruct",
+          "fields": {
+            "demo": [
+              {
+                "x": 5,
+                "y": -6
+              },
+              {
+                "x": 7,
+                "y": -8
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "error": null
+}

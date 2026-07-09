@@ -1,0 +1,17 @@
+[package]
+name = "tdf"
+version = "0.1.0"
+edition = "2021"
+authors = ["Jordan Yates"]
+description = "Block decoders for Infuse-IoT Tagged Data Format (TDF)"
+license-file = "../LICENSE.md"
+repository = "https://github.com/Embeint/tdf-decoders"
+homepage = "https://github.com/Embeint/tdf-decoders"
+documentation = "https://github.com/Embeint/tdf-decoders/tree/main/rust"
+readme = "README.md"
+keywords = ["tdf", "decoder", "binary"]
+categories = ["encoding"]
+
+[dependencies]
+byteorder = "1.5.0"
+chrono = "0.4.38"

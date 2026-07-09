@@ -1,0 +1,44 @@
+{
+    "structs": {
+        "tdf_struct_demo": {
+            "description": "Infuse Mesh path combination",
+            "fields": [
+                {"name": "x", "type": "uint8_t", "description": "Field X"},
+                {"name": "y", "type": "uint8_t", "description": "Field Y",  "conversion": {"m": -1, "c": 0}}
+            ]
+        }
+    },
+    "definitions": {
+        "1025": {
+            "name": "UUID_REPORT",
+            "description": "Generic UUID report",
+            "fields": [
+                {
+                    "name": "uuid",
+                    "type": "uint8_t",
+                    "num": 16,
+                    "description": "UUID",
+                    "conversion": {"hex": true}
+                },
+                {
+                    "name": "rssi",
+                    "type": "int8_t",
+                    "description": "Received Signal Strength Indicator.",
+                    "display": {"fmt": "dec", "digits": 3}
+                }
+            ]
+        },
+        "1026": {
+            "name": "EXTENSION_STRUCT",
+            "description": "Demonstration of extension structs",
+            "fields": [
+                {
+                    "name": "demo",
+                    "type": "struct tdf_struct_demo",
+                    "num": 2,
+                    "description": "Demo extension struct"
+                }
+            ]
+        }
+    }
+}

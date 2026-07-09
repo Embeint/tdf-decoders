@@ -1,0 +1,130 @@
+use std::io::{Cursor, Read};
+
+use byteorder::{BigEndian, LittleEndian, ReadBytesExt};
+
+use crate::{TdfDecodeError, TdfDecodeResult};
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum TdfValue {
+    Int(i64),
+    UInt(u64),
+    Float(f64),
+    String(String),
+    Bytes(Vec<u8>),
+    List(Vec<TdfValue>),
+    Struct(Vec<TdfField>),
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct TdfField {
+    pub name: &'static str,
+    pub value: TdfValue,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct TdfDecodedPayload {
+    pub id: u16,
+    pub name: &'static str,
+    pub type_name: &'static str,
+    pub fields: Vec<TdfField>,
+}
+
+pub fn tdf_known_name(tdf_id: u16) -> Option<&'static str>
+{
+    match tdf_id {
+{% for tdf_id, info in definitions.items() %}
+        {{ tdf_id }} => Some("{{ info['name'] }}"),
+{% endfor %}
+        _ => None,
+    }
+}
+
+fn tdf_field_read_string_to_string(cursor: &mut Cursor<&[u8]>, cursor_start: u64, num: u8, size: u8) -> TdfDecodeResult<String>
+{
+    let buf = tdf_field_read_string(cursor, cursor_start, num, size)?;
+
+    match String::from_utf8(buf) {
+        Ok(val) => Ok(val.trim_matches(char::from(0)).to_string()),
+        Err(..) => Ok(String::new()),
+    }
+}
+
+{% if has_hex_conversion %}
+fn tdf_field_read_hex(cursor: &mut Cursor<&[u8]>, cursor_start: u64, num: u8, size: u8) -> TdfDecodeResult<String>
+{
+    let buf = tdf_field_read_string(cursor, cursor_start, num, size)?;
+    let mut value = String::with_capacity(buf.len() * 2);
+    const HEX: &[u8; 16] = b"0123456789abcdef";
+
+    for byte in buf {
+        value.push(HEX[(byte >> 4) as usize] as char);
+        value.push(HEX[(byte & 0x0f) as usize] as char);
+    }
+
+    Ok(value)
+}
+
+{% endif %}
+pub fn tdf_decode_payload(tdf_id: u16, size: u8, data: &[u8]) -> TdfDecodeResult<Option<TdfDecodedPayload>>
+{
+    let mut cursor = Cursor::new(data);
+    let cursor_start = cursor.position();
+
+    let decoded = match tdf_id {
+{% for tdf_id, info in definitions.items() %}
+        {{ tdf_id }} => Some(TdfDecodedPayload {
+            id: {{ tdf_id }},
+            name: "{{ info['name'] }}",
+            type_name: "{{ info['rust_payload_type_name'] }}",
+            fields: vec![
+                {{ info['rust_decode_fields'] }}
+            ],
+        }),
+{% endfor %}
+        _ => None,
+    };
+
+    if decoded.is_some() && cursor.position() != size as u64 {
+        return Err(TdfDecodeError::InvalidData(
+            "Decoded payload did not consume exactly its element size",
+        ));
+    }
+
+    Ok(decoded)
+}
+
+fn vla_bytes_remaining(cursor: &mut Cursor<&[u8]>, cursor_start: u64, size: u8) -> TdfDecodeResult<usize>
+{
+    let cursor_current = cursor.position();
+    let cursor_read = cursor_current - cursor_start;
+    if cursor_read > size as u64 {
+        return Err(TdfDecodeError::InvalidData(
+            "Insufficient data remaining",
+        ));
+    }
+    let bytes_remaining = size as u64 - cursor_read;
+
+    Ok(bytes_remaining as usize)
+}
+
+fn tdf_field_read_string(cursor: &mut Cursor<&[u8]>, cursor_start: u64, num: u8, size: u8) ->  TdfDecodeResult<Vec<u8>>
+{
+    let string_length = match num {
+        0 => vla_bytes_remaining(cursor, cursor_start, size)?,
+        _ => num as usize,
+    };
+
+    let mut buf = vec![0u8; string_length];
+    cursor.read_exact(&mut buf)?;
+
+    Ok(buf)
+}
+
+fn tdf_field_read_vla(cursor: &mut Cursor<&[u8]>, cursor_start: u64, size: u8) ->  TdfDecodeResult<Vec<u8>>
+{
+    let bytes_remaining = vla_bytes_remaining(cursor, cursor_start, size)?;
+    let mut buf = vec![0u8; bytes_remaining];
+
+    cursor.read_exact(&mut buf)?;
+    Ok(buf)
+}

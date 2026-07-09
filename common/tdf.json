@@ -1,0 +1,626 @@
+{
+    "structs": {
+        "tdf_struct_mcuboot_img_sem_ver": {
+            "description": "MCUboot semantic versioning struct",
+            "fields": [
+                {"name": "major", "type": "uint8_t"},
+                {"name": "minor", "type": "uint8_t"},
+                {"name": "revision", "type": "uint16_t"},
+                {"name": "build_num", "type": "uint32_t", "display": {"fmt": "hex", "digits": 8}}
+            ]
+        },
+        "tdf_struct_xyz_16bit": {
+            "description": "Generic 3-axis sensor reading",
+            "fields": [
+                {"name": "x", "type": "int16_t"},
+                {"name": "y", "type": "int16_t"},
+                {"name": "z", "type": "int16_t"}
+            ]
+        },
+        "tdf_struct_gcs_location": {
+            "description": "Geographic Coordinate System location",
+            "fields": [
+                {"name": "latitude", "type": "int32_t", "description": "Latitude degrees (scale 1e7)", "display": {"fmt": "float", "digits": 5, "postfix": "deg"}, "conversion": {"m": 0.0000001, "c": 0}},
+                {"name": "longitude", "type": "int32_t", "description": "Longitude degrees (scale 1e7)", "display": {"fmt": "float", "digits": 5, "postfix": "deg"}, "conversion": {"m": 0.0000001, "c": 0}},
+                {"name": "height", "type": "int32_t", "description": "Height above reference ellipsoid (mm)", "display": {"fmt": "float", "digits": 3, "postfix": "m"}, "conversion": {"m": 0.001, "c": 0}}
+            ]
+        },
+        "tdf_struct_lte_cell_id_local": {
+            "description": "LTE cell ID (Local)",
+            "fields": [
+                {"name": "eci", "type": "uint32_t", "description": "E-UTRAN Cell ID"},
+                {"name": "tac", "type": "uint16_t", "description": "Tracking Area Code"}
+            ]
+        },
+        "tdf_struct_lte_cell_id_global": {
+            "description": "LTE cell ID (Global)",
+            "fields": [
+                {"name": "mcc", "type": "uint16_t", "description": "Mobile Country Code"},
+                {"name": "mnc", "type": "uint16_t", "description": "Mobile Network Code"},
+                {"name": "eci", "type": "uint32_t", "description": "E-UTRAN Cell ID"},
+                {"name": "tac", "type": "uint16_t", "description": "Tracking Area Code"}
+            ]
+        },
+        "tdf_struct_lte_cell_neighbour": {
+            "description": "LTE cell ID (Global)",
+            "fields": [
+                {"name": "earfcn", "type": "uint32_t", "description": "Evolved Absolute Radio Frequency Channel (E-ARFCN)"},
+                {"name": "pci", "type": "uint16_t", "description": "Physical Cell Identity"},
+                {"name": "time_diff", "type": "uint16_t", "description": "Time after the serving cell was observed that the neighbor cell was observed", "display": {"postfix": "s"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "rsrp", "type": "uint8_t", "description": "Reference signal received power (255 = Unknown)", "display": {"postfix": "dBm"}, "conversion": {"m": -1, "c": 0}},
+                {"name": "rsrq", "type": "int8_t", "description": "Reference signal received quality (-128 = Unknown)", "display": {"postfix": "dB"}}
+            ]
+        },
+        "tdf_struct_bt_addr_le": {
+            "description": "Bluetooth address type (bt_addr_le_t)",
+            "fields": [
+                {"name": "type", "type": "uint8_t", "description": "Address type (0 = Public, 1 = Random)"},
+                {"name": "val", "type": "uint8_t", "num": 6, "display": {"fmt": "hex", "digits": 12}, "conversion": {"int": "little"}, "description": "Address bytes"}
+            ]
+        },
+        "tdf_struct_eui48": {
+            "description": "IEEE EUI-48 address",
+            "fields": [
+                {"name": "val", "type": "uint8_t", "num": 6, "display": {"fmt": "hex", "digits": 12}, "conversion": {"int": "big"}, "description": "Address bytes"}
+            ]
+        },
+        "tdf_struct_wifi_network_params": {
+            "description": "WiFi network parameters",
+            "fields": [
+                {"name": "bssid", "type": "uint8_t", "num": 6, "display": {"fmt": "hex", "digits": 12}, "conversion": {"int": "big"}, "description": "Basic Service Set Identifier (MAC address)"},
+                {"name": "band", "type": "uint8_t", "description": "Frequency band"},
+                {"name": "channel", "type": "uint8_t", "description": "Channel index"},
+                {"name": "iface_mode", "type": "uint8_t", "description": "https://w1.fi/wpa_supplicant/devel/defs_8h.html#a4aeb27c1e4abd046df3064ea9756f0bc"},
+                {"name": "link_mode", "type": "uint8_t", "description": "WiFi link operating mode (https://en.wikipedia.org/wiki/Wi-Fi#Versions_and_generations)"},
+                {"name": "security", "type": "uint8_t", "description": "IEEE 802.11 security type"},
+                {"name": "rssi", "type": "int8_t", "description": "Received signal strength (dBm)"},
+                {"name": "beacon_interval", "type": "uint16_t", "description": "Beacon interval (ms)"},
+                {"name": "twt_capable", "type": "uint8_t", "description": "Target Wake Time capable?"}
+            ]
+        }
+    },
+    "definitions": {
+        "1": {
+            "name": "ANNOUNCE",
+            "description": "Common announcement packet",
+            "fields": [
+                {"name": "application", "type": "uint32_t", "description": "Unique application ID", "display": {"fmt": "hex", "digits": 8}},
+                {"name": "version", "type": "struct tdf_struct_mcuboot_img_sem_ver", "description": "Running application version"},
+                {"name": "kv_crc", "type": "uint32_t", "description": "Key-Value store reflect global CRC", "display": {"fmt": "hex", "digits": 8}},
+                {"name": "blocks", "type": "uint32_t", "description": "Logger blocks written"},
+                {"name": "uptime", "type": "uint32_t", "description": "Uptime in seconds"},
+                {"name": "reboots", "type": "uint16_t", "description": "Reboot counter"},
+                {"name": "flags", "type": "uint8_t", "description": "Flags (BIT(0) = SD blocks)", "display": {"fmt": "hex", "digits": 2}}
+            ]
+        },
+        "2": {
+            "name": "BATTERY_STATE",
+            "description": "General battery state",
+            "fields": [
+                {"name": "voltage_mv", "type": "uint32_t", "description": "Battery voltage (milliVolts)", "display": {"postfix": "mV"}},
+                {"name": "current_ua", "type": "int32_t", "description": "Battery current (microamps) (Negative = discharging)", "display": {"postfix": "uA"}},
+                {"name": "soc", "type": "uint8_t", "description": "State of charge (percent)", "display": {"postfix": "%"}}
+            ]
+        },
+        "3": {
+            "name": "AMBIENT_TEMP_PRES_HUM",
+            "description": "Ambient temperature, pressure & humidity",
+            "fields": [
+                {"name": "temperature", "type": "int32_t", "description": "Ambient temperature (millidegrees)", "display": {"fmt": "float", "digits": 3, "postfix": "deg"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "pressure", "type": "uint32_t", "description": "Atmospheric pressure (pascals)", "display": {"fmt": "float", "digits": 3, "postfix": "kPA"}, "conversion": {"m": 0.001, "c": 0} },
+                {"name": "humidity", "type": "uint16_t", "description": "Relative humidity (centipercent)", "display": {"fmt": "float", "digits": 2, "postfix": "%"}, "conversion": {"m": 0.01, "c": 0}}
+            ]
+        },
+        "4": {
+            "name": "AMBIENT_TEMPERATURE",
+            "description": "Ambient temperature",
+            "fields": [
+                {"name": "temperature", "type": "int32_t", "description": "Ambient temperature (millidegrees)", "display": {"fmt": "float", "digits": 3, "postfix": "deg"}, "conversion": {"m": 0.001, "c": 0}}
+            ]
+        },
+        "5": {
+            "name": "TIME_SYNC",
+            "description": "Time synchronised to new source",
+            "fields": [
+                {"name": "source", "type": "uint8_t", "description": "Updated time source"},
+                {"name": "shift", "type": "int32_t", "description": "Time shift (microseconds)", "display": {"postfix": "us"}, "conversion": {"m": 0.000001, "c": 0}}
+            ]
+        },
+        "6": {
+            "name": "REBOOT_INFO",
+            "description": "Information pertaining to the previous reboot",
+            "fields": [
+                {"name": "reason", "type": "uint8_t", "description": "Reboot reason (enum infuse_reboot_reason)"},
+                {"name": "hardware_flags", "type": "uint32_t", "description": "Hardware flags (hwinfo_get_reset_cause)", "display": {"fmt": "hex", "digits": 8}},
+                {"name": "count", "type": "uint32_t", "description": "Reboot counter"},
+                {"name": "uptime", "type": "uint32_t", "description": "Uptime before reboot (seconds)"},
+                {"name": "param_1", "type": "uint32_t", "description": "Program counter/Watchdog Info/Other", "display": {"fmt": "hex", "digits": 8}},
+                {"name": "param_2", "type": "uint32_t", "description": "Link Register/Watchdog Info/Other", "display": {"fmt": "hex", "digits": 8}},
+                {"name": "thread", "type": "char", "num": 8, "description": "Running thread at reboot"}
+            ]
+        },
+        "7": {
+            "name": "ANNOUNCE_V2",
+            "description": "Common announcement packet",
+            "fields": [
+                {"name": "application", "type": "uint32_t", "description": "Unique application ID", "display": {"fmt": "hex", "digits": 8}},
+                {"name": "version", "type": "struct tdf_struct_mcuboot_img_sem_ver", "description": "Running application version"},
+                {"name": "board_crc", "type": "uint16_t", "description": "CRC of board name", "display": {"fmt": "hex", "digits": 4}},
+                {"name": "kv_crc", "type": "uint32_t", "description": "Key-Value store reflect global CRC", "display": {"fmt": "hex", "digits": 8}},
+                {"name": "blocks", "type": "uint32_t", "description": "Logger blocks written"},
+                {"name": "uptime", "type": "uint32_t", "description": "Uptime in seconds"},
+                {"name": "reboots", "type": "uint16_t", "description": "Reboot counter"},
+                {"name": "flags", "type": "uint8_t", "description": "Flags (BIT(0) = SD blocks, BIT(7) = Shipping)", "display": {"fmt": "hex", "digits": 2}}
+            ]
+        },
+        "8": {
+            "name": "SOC_TEMPERATURE",
+            "description": "SoC die temperature",
+            "fields": [
+                {"name": "temperature", "type": "int16_t", "description": "SoC die temperature (centidegrees)", "display": {"fmt": "float", "digits": 2, "postfix": "deg"}, "conversion": {"m": 0.01, "c": 0}}
+            ]
+        },
+        "10": {
+            "name": "ACC_2G",
+            "description": "Accelerometer +-2G",
+            "fields": [
+                {"name": "sample", "type": "struct tdf_struct_xyz_16bit", "description": "Raw sample"}
+            ]
+        },
+        "11": {
+            "name": "ACC_4G",
+            "description": "Accelerometer +-4G",
+            "fields": [
+                {"name": "sample", "type": "struct tdf_struct_xyz_16bit", "description": "Raw sample"}
+            ]
+        },
+        "12": {
+            "name": "ACC_8G",
+            "description": "Accelerometer +-8G",
+            "fields": [
+                {"name": "sample", "type": "struct tdf_struct_xyz_16bit", "description": "Raw sample"}
+            ]
+        },
+        "13": {
+            "name": "ACC_16G",
+            "description": "Accelerometer +-16G",
+            "fields": [
+                {"name": "sample", "type": "struct tdf_struct_xyz_16bit", "description": "Raw sample"}
+            ]
+        },
+        "14": {
+            "name": "GYR_125DPS",
+            "description": "Gyroscope +-125 DPS",
+            "fields": [
+                {"name": "sample", "type": "struct tdf_struct_xyz_16bit", "description": "Raw sample"}
+            ]
+        },
+        "15": {
+            "name": "GYR_250DPS",
+            "description": "Gyroscope +-250 DPS",
+            "fields": [
+                {"name": "sample", "type": "struct tdf_struct_xyz_16bit", "description": "Raw sample"}
+            ]
+        },
+        "16": {
+            "name": "GYR_500DPS",
+            "description": "Gyroscope +-500 DPS",
+            "fields": [
+                {"name": "sample", "type": "struct tdf_struct_xyz_16bit", "description": "Raw sample"}
+            ]
+        },
+        "17": {
+            "name": "GYR_1000DPS",
+            "description": "Gyroscope +-1000 DPS",
+            "fields": [
+                {"name": "sample", "type": "struct tdf_struct_xyz_16bit", "description": "Raw sample"}
+            ]
+        },
+        "18": {
+            "name": "GYR_2000DPS",
+            "description": "Gyroscope +-2000 DPS",
+            "fields": [
+                {"name": "sample", "type": "struct tdf_struct_xyz_16bit", "description": "Raw sample"}
+            ]
+        },
+        "19": {
+            "name": "GCS_WGS84_LLHA",
+            "description": "Geo-location (WGS-84) + accuracy",
+            "fields": [
+                {"name": "location", "type": "struct tdf_struct_gcs_location", "description": "WGS-84 referenced location"},
+                {"name": "h_acc", "type": "int32_t", "description": "Horizontal accuracy (mm)", "display": {"fmt": "float", "digits": 3, "postfix": "m"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "v_acc", "type": "int32_t", "description": "Vertical accuracy (mm)", "display": {"fmt": "float", "digits": 3, "postfix": "m"}, "conversion": {"m": 0.001, "c": 0}}
+            ]
+        },
+        "20": {
+            "name": "UBX_NAV_PVT",
+            "description": "u-blox GNSS NAV-PVT message",
+            "fields": [
+                {"name": "itow", "type": "uint32_t", "description": "GPS time of week of the navigation epoch"},
+                {"name": "year", "type": "uint16_t", "description": "Year (UTC)"},
+                {"name": "month", "type": "uint8_t", "description": "Month, range 1..12 (UTC)"},
+                {"name": "day", "type": "uint8_t", "description": "Day of month, range 1..31 (UTC)"},
+                {"name": "hour", "type": "uint8_t", "description": "Hour of day, range 0..23 (UTC)"},
+                {"name": "min", "type": "uint8_t", "description": "Minute of hour, range 0..59 (UTC)"},
+                {"name": "sec", "type": "uint8_t", "description": "Seconds of minute, range 0..60 (UTC)"},
+                {"name": "valid", "type": "uint8_t", "description": "Validity flags", "display": {"fmt": "hex", "digits": 2}},
+                {"name": "t_acc", "type": "uint32_t", "description": "Time accuracy estimate (UTC)", "display": {"postfix": "ns"}},
+                {"name": "nano", "type": "int32_t", "description": "Fraction of second, range -1e9 .. 1e9 (UTC)", "display": {"postfix": "ns"}},
+                {"name": "fix_type", "type": "uint8_t", "description": "GNSS fix Type"},
+                {"name": "flags", "type": "uint8_t", "description": "Fix status flags", "display": {"fmt": "hex", "digits": 2}},
+                {"name": "flags2", "type": "uint8_t", "description": "Additional flags", "display": {"fmt": "hex", "digits": 2}},
+                {"name": "num_sv", "type": "uint8_t", "description": "Number of satellites used in Nav Solution"},
+                {"name": "lon", "type": "int32_t", "description": "Longitude", "display": {"postfix": "deg"}, "conversion": {"m": 0.0000001, "c": 0}},
+                {"name": "lat", "type": "int32_t", "description": "Latitude", "display": {"postfix": "deg"}, "conversion": {"m": 0.0000001, "c": 0}},
+                {"name": "height", "type": "int32_t", "description": "Height above ellipsoid", "display": {"postfix": "m"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "h_msl", "type": "int32_t", "description": "Height above mean sea level", "display": {"postfix": "m"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "h_acc", "type": "uint32_t", "description": "Horizontal accuracy estimate", "display": {"postfix": "m"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "v_acc", "type": "uint32_t", "description": "Vertical accuracy estimate", "display": {"postfix": "m"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "vel_n", "type": "int32_t", "description": "NED north velocity", "display": {"postfix": "m/s"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "vel_e", "type": "int32_t", "description": "NED east velocity", "display": {"postfix": "m/s"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "vel_d", "type": "int32_t", "description": "NED down velocity", "display": {"postfix": "m/s"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "g_speed", "type": "int32_t", "description": "Ground Speed (2-D)", "display": {"postfix": "m/s"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "head_mot", "type": "int32_t", "description": "Heading of motion (2-D)", "display": {"postfix": "deg"}, "conversion": {"m": 0.00001, "c": 0}},
+                {"name": "s_acc", "type": "uint32_t", "description": "Speed accuracy estimate", "display": {"postfix": "m/s"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "head_acc", "type": "uint32_t", "description": "Heading accuracy estimate (both motion and vehicle)", "display": {"postfix": "deg"}, "conversion": {"m": 0.00001, "c": 0}},
+                {"name": "p_dop", "type": "uint16_t", "description": "Position DOP", "conversion": {"m": 0.01, "c": 0}},
+                {"name": "flags3", "type": "uint16_t", "description": "Additional flags", "display": {"fmt": "hex", "digits": 4}},
+                {"name": "reserved0", "type": "uint8_t", "num": 4, "description": "Reserved"},
+                {"name": "head_veh", "type": "int32_t", "description": "Heading of vehicle (2-D)", "display": {"postfix": "deg"}, "conversion": {"m": 0.00001, "c": 0}},
+                {"name": "mag_dec", "type": "int16_t", "description": "Magnetic declination", "display": {"postfix": "deg"}, "conversion": {"m": 0.01, "c": 0}},
+                {"name": "mag_acc", "type": "uint16_t", "description": "Magnetic declination accuracy", "display": {"postfix": "deg"}, "conversion": {"m": 0.01, "c": 0}}
+            ]
+        },
+        "21": {
+            "name": "LTE_CONN_STATUS",
+            "description": "Information on service cell and registration status",
+            "fields": [
+                {"name": "cell", "type": "struct tdf_struct_lte_cell_id_global", "description": "Global LTE cell identifier"},
+                {"name": "earfcn", "type": "uint32_t", "description": "Evolved Absolute Radio Frequency Channel (E-ARFCN)"},
+                {"name": "status", "type": "uint8_t", "description": "Registration status (See AT+CEREG)"},
+                {"name": "tech", "type": "uint8_t", "description": "Access Technology (7 = LTE-M, 9 = NB-IoT)"},
+                {"name": "rsrp", "type": "uint8_t", "description": "Reference signal received power (255 = Unknown)", "display": {"postfix": "dBm"}, "conversion": {"m": -1, "c": 0}},
+                {"name": "rsrq", "type": "int8_t", "description": "Reference signal received quality (-128 = Unknown)", "display": {"postfix": "dB"}}
+            ]
+        },
+        "22": {
+            "name": "GLOBALSTAR_PKT",
+            "description": "9 byte payload transmitted over the Globalstar Simplex network",
+            "fields": [
+                {"name": "payload", "type": "uint8_t", "num": 9, "description": "User data payload"}
+            ]
+        },
+        "23": {
+            "name": "ACC_MAGNITUDE_STD_DEV",
+            "description": "Accelerometer magnitude standard deviation over a window",
+            "fields": [
+                {"name": "count", "type": "uint32_t", "description": "Number of samples in window"},
+                {"name": "std_dev", "type": "uint32_t", "description": "Standard deviation in micro-g"}
+            ]
+        },
+        "24": {
+            "name": "ACTIVITY_METRIC",
+            "description": "Generic activity metric",
+            "fields": [
+                {"name": "value", "type": "uint32_t", "description": "Activity metric value"}
+            ]
+        },
+        "25": {
+            "name": "ALGORITHM_OUTPUT",
+            "description": "Instantaneous algorithm output",
+            "fields": [
+                {"name": "algorithm_id", "type": "uint32_t", "description": "Algorithm identifier", "display": {"fmt": "hex", "digits": 8}},
+                {"name": "algorithm_version", "type": "uint16_t", "description": "Algorithm version number"},
+                {"name": "output", "type": "uint8_t", "num": 0, "description": "Arbitrary algorithm output"}
+            ]
+        },
+        "26": {
+            "name": "RUNTIME_ERROR",
+            "description": "Runtime error logging",
+            "fields": [
+                {"name": "error_id", "type": "uint32_t", "description": "Unique error identifier"},
+                {"name": "error_ctx", "type": "uint32_t", "description": "Additional context about the error"}
+            ]
+        },
+        "27": {
+            "name": "CHARGER_EN_CONTROL",
+            "description": "Battery charging enable state",
+            "fields": [
+                {"name": "enabled", "type": "uint8_t", "description": "Charger is enabled"}
+            ]
+        },
+        "28": {
+            "name": "GNSS_FIX_INFO",
+            "description": "Metadata about a GNSS location fix",
+            "fields": [
+                {"name": "time_fix", "type": "uint16_t", "description": "Duration it took for accurate time knowledge (seconds)"},
+                {"name": "location_fix", "type": "uint16_t", "description": "Duration it took for desired location knowledge (seconds)"},
+                {"name": "num_sv", "type": "uint8_t", "description": "Number of satellite vehicles used in location fix"}
+            ]
+        },
+        "29": {
+            "name": "BLUETOOTH_CONNECTION",
+            "description": "Bluetooth connection state change",
+            "fields": [
+                {"name": "address", "type": "struct tdf_struct_bt_addr_le", "description": "Address of remote device"},
+                {"name": "connected", "type": "uint8_t", "description": "Connected (1) or Disconnected (0)"}
+            ]
+        },
+        "30": {
+            "name": "BLUETOOTH_RSSI",
+            "description": "Received signal strength of Bluetooth device",
+            "fields": [
+                {"name": "address", "type": "struct tdf_struct_bt_addr_le", "description": "Address of remote device"},
+                {"name": "rssi", "type": "int8_t", "display": {"postfix": "dBm"}, "description": "Bluetooth RSSI"}
+            ]
+        },
+        "31": {
+            "name": "BLUETOOTH_DATA_THROUGHPUT",
+            "description": "Data throughput of Bluetooth link",
+            "fields": [
+                {"name": "address", "type": "struct tdf_struct_bt_addr_le", "description": "Address of remote device"},
+                {"name": "throughput", "type": "int32_t", "display": {"postfix": "B/sec"}, "description": "Data throughput (-1 = disconnected)"}
+            ]
+        },
+        "32": {
+            "name": "ALGORITHM_CLASS_HISTOGRAM",
+            "description": "Algorithm output class histogram over a time window",
+            "fields": [
+                {"name": "algorithm_id", "type": "uint32_t", "description": "Algorithm identifier", "display": {"fmt": "hex", "digits": 8}},
+                {"name": "algorithm_version", "type": "uint16_t", "description": "Algorithm version number"},
+                {"name": "classes", "type": "uint8_t", "num": 0, "description": "Count per output class"}
+            ]
+        },
+        "33": {
+            "name": "ALGORITHM_CLASS_TIME_SERIES",
+            "description": "Algorithm output class time series vector",
+            "fields": [
+                {"name": "algorithm_id", "type": "uint32_t", "description": "Algorithm identifier", "display": {"fmt": "hex", "digits": 8}},
+                {"name": "algorithm_version", "type": "uint16_t", "description": "Algorithm version number"},
+                {"name": "values", "type": "uint8_t", "num": 0, "description": "Output classes"}
+            ]
+        },
+        "34": {
+            "name": "LTE_TAC_CELLS",
+            "description": "Information on cells in a tracking area",
+            "fields": [
+                {"name": "cell", "type": "struct tdf_struct_lte_cell_id_global", "description": "Global LTE cell identifier"},
+                {"name": "earfcn", "type": "uint32_t", "description": "Evolved Absolute Radio Frequency Channel (E-ARFCN)"},
+                {"name": "rsrp", "type": "uint8_t", "description": "Reference signal received power (255 = Unknown)", "display": {"postfix": "dBm"}, "conversion": {"m": -1, "c": 0}},
+                {"name": "rsrq", "type": "int8_t", "description": "Reference signal received quality (-128 = Unknown)", "display": {"postfix": "dB"}},
+                {"name": "neighbours", "type": "struct tdf_struct_lte_cell_neighbour", "num": 0, "description": "Neighbouring cell measurements"}
+            ]
+        },
+        "35" : {
+            "name": "WIFI_AP_INFO",
+            "description": "Wi-Fi access point information",
+            "fields": [
+                {"name": "bssid", "type": "struct tdf_struct_eui48", "description": "Access Point BSSID"},
+                {"name": "channel", "type": "uint8_t", "description": "Wi-Fi channel number"},
+                {"name": "rsrp", "type": "int8_t", "description": "Received signal strength (dBm)"}
+            ]
+        },
+        "36" : {
+            "name": "DEVICE_TILT",
+            "description": "Tilt angle of the device",
+            "fields": [
+                {"name": "cosine", "type": "float", "description": "Cosine of the tilt angle", "display": {"fmt": "float", "digits": 6}}
+            ]
+        },
+        "37": {
+            "name": "NRF9X_GNSS_PVT",
+            "description": "nRF9x GNSS PVT data frame",
+            "fields": [
+                {"name": "lat", "type": "int32_t", "description": "Latitude", "display": {"postfix": "deg"}, "conversion": {"m": 0.0000001, "c": 0}},
+                {"name": "lon", "type": "int32_t", "description": "Longitude", "display": {"postfix": "deg"}, "conversion": {"m": 0.0000001, "c": 0}},
+                {"name": "height", "type": "int32_t", "description": "Height above ellipsoid", "display": {"postfix": "m"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "h_acc", "type": "uint32_t", "description": "Horizontal accuracy estimate", "display": {"postfix": "m"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "v_acc", "type": "uint32_t", "description": "Vertical accuracy estimate", "display": {"postfix": "m"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "h_speed", "type": "int32_t", "description": "Horizontal Speed (2-D)", "display": {"postfix": "m/s"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "h_speed_acc", "type": "uint32_t", "description": "Horizontal speed accuracy estimate", "display": {"postfix": "m/s"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "v_speed", "type": "int32_t", "description": "Horizontal Speed (2-D)", "display": {"postfix": "m/s"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "v_speed_acc", "type": "uint32_t", "description": "Horizontal speed accuracy estimate", "display": {"postfix": "m/s"}, "conversion": {"m": 0.001, "c": 0}},
+                {"name": "head_mot", "type": "int32_t", "description": "Heading of motion (2-D)", "display": {"postfix": "deg"}, "conversion": {"m": 0.00001, "c": 0}},
+                {"name": "head_acc", "type": "uint32_t", "description": "Heading accuracy estimate (both motion and vehicle)", "display": {"postfix": "deg"}, "conversion": {"m": 0.00001, "c": 0}},
+                {"name": "year", "type": "uint16_t", "description": "Year (UTC)"},
+                {"name": "month", "type": "uint8_t", "description": "Month, range 1..12 (UTC)"},
+                {"name": "day", "type": "uint8_t", "description": "Day of month, range 1..31 (UTC)"},
+                {"name": "hour", "type": "uint8_t", "description": "Hour of day, range 0..23 (UTC)"},
+                {"name": "min", "type": "uint8_t", "description": "Minute of hour, range 0..59 (UTC)"},
+                {"name": "sec", "type": "uint8_t", "description": "Seconds of minute, range 0..60 (UTC)"},
+                {"name": "ms", "type": "uint16_t", "description": "Milliseconds, range 0..999 (UTC)"},
+                {"name": "p_dop", "type": "uint16_t", "description": "Position DOP", "conversion": {"m": 0.01, "c": 0}},
+                {"name": "h_dop", "type": "uint16_t", "description": "Horizontal position DOP", "conversion": {"m": 0.01, "c": 0}},
+                {"name": "v_dop", "type": "uint16_t", "description": "Vertical position DOP", "conversion": {"m": 0.01, "c": 0}},
+                {"name": "t_dop", "type": "uint16_t", "description": "Time DOP", "conversion": {"m": 0.01, "c": 0}},
+                {"name": "flags", "type": "uint8_t", "description": "Fix status flags", "display": {"fmt": "hex", "digits": 2}},
+                {"name": "num_sv", "type": "uint8_t", "description": "Number of satellites used in Nav Solution"}
+            ]
+        },
+        "38" : {
+            "name": "BATTERY_CHARGE_ACCUMULATED",
+            "description": "Battery charge accumulated over time (+ve entering battery, -ve exiting battery)",
+            "fields": [
+                {"name": "charge", "type": "int32_t", "description": "Accumulated charge (microamp-seconds)", "display": {"postfix": "uAs"}}
+            ]
+        },
+        "39": {
+            "name": "INFUSE_BLUETOOTH_RSSI",
+            "description": "Received signal strength of Infuse-IoT Bluetooth device",
+            "fields": [
+                {"name": "infuse_id", "type": "uint64_t", "display": {"fmt": "hex", "digits": 16}, "description": "Infuse-IoT ID of remote device"},
+                {"name": "rssi", "type": "int8_t", "display": {"postfix": "dBm"}, "description": "Bluetooth RSSI"}
+            ]
+        },
+        "40": {
+            "name": "ADC_RAW_8",
+            "description": "Generic 8bit raw ADC reading",
+            "fields": [
+                {"name": "val", "type": "int8_t", "description": "Raw ADC reading"}
+            ]
+        },
+        "41": {
+            "name": "ADC_RAW_16",
+            "description": "Generic 16bit raw ADC reading",
+            "fields": [
+                {"name": "val", "type": "int16_t", "description": "Raw ADC reading"}
+            ]
+        },
+        "42": {
+            "name": "ADC_RAW_32",
+            "description": "Generic 32bit raw ADC reading",
+            "fields": [
+                {"name": "val", "type": "int32_t", "description": "Raw ADC reading"}
+            ]
+        },
+        "43": {
+            "name": "ANNOTATION",
+            "description": "Generic event annotation",
+            "fields": [
+                {"name": "timestamp", "type": "uint32_t", "description": "Annotation timestamp (GNSS seconds)"},
+                {"name": "event", "type": "char", "num": 0, "description": "Event that occurred"}
+            ]
+        },
+        "44": {
+            "name": "LORA_RX",
+            "description": "Received LoRa packet",
+            "fields": [
+                {"name": "snr", "type": "int8_t", "description": "Signal to Noise ratio (dB)", "display": {"postfix": "dB"}},
+                {"name": "rssi", "type": "int16_t", "description": "Received signal strength (dBm)", "display": {"postfix": "dBm"}},
+                {"name": "payload", "type": "uint8_t", "num": 0, "description": "Packet payload", "display": {"fmt": "hex", "digits": 2}}
+            ]
+        },
+        "45": {
+            "name": "LORA_TX",
+            "description": "Transmitted LoRa packet",
+            "fields": [
+                {"name": "payload", "type": "uint8_t", "num": 0, "description": "Payload", "display": {"fmt": "hex", "digits": 2}}
+            ]
+        },
+        "46": {
+            "name": "IDX_ARRAY_FREQ",
+            "description": "Sample frequency metadata for a TDF_DATA_FORMAT_IDX_ARRAY array",
+            "fields": [
+                {"name": "tdf_id", "type": "uint16_t", "description": "TDF ID that is being described"},
+                {"name": "frequency", "type": "uint32_t", "description": "Frequency of samples in Hertz", "display": {"postfix": "Hz"}}
+            ]
+        },
+        "47": {
+            "name": "IDX_ARRAY_PERIOD",
+            "description": "Sample frequency metadata for a TDF_DATA_FORMAT_IDX_ARRAY array",
+            "fields": [
+                {"name": "tdf_id", "type": "uint16_t", "description": "TDF ID that is being described"},
+                {"name": "period", "type": "uint32_t", "description": "Period between samples in nanoseconds", "display": {"postfix": "ns"}}
+            ]
+        },
+        "48": {
+            "name": "WIFI_CONNECTED",
+            "description": "WiFi network is now connected",
+            "fields": [
+                {"name": "network", "type": "struct tdf_struct_wifi_network_params", "description": "Network parameters"}
+            ]
+        },
+        "49": {
+            "name": "WIFI_CONNECTION_FAILED",
+            "description": "Failed to connect to a WiFi network",
+            "fields": [
+                {"name": "reason", "type": "uint8_t", "description": "Reported reason for connection failure"}
+            ]
+        },
+        "50": {
+            "name": "WIFI_DISCONNECTED",
+            "description": "Wi-Fi network is now disconnected",
+            "fields": [
+                {"name": "reason", "type": "uint8_t", "description": "Reported reason for disconnection"}
+            ]
+        },
+        "51": {
+            "name": "NETWORK_SCAN_COUNT",
+            "description": "Counts associated with scanning Wi-Fi and LTE networks",
+            "fields": [
+                {"name": "num_wifi", "type": "uint8_t", "description": "Number of Wi-Fi APs found"},
+                {"name": "num_lte", "type": "uint8_t", "description": "Number of LTE cells found"}
+            ]
+        },
+        "52": {
+            "name": "EXCEPTION_STACK_FRAME",
+            "description": "Generic exception stack frame",
+            "fields": [
+                {"name": "frame", "type": "uint32_t", "num":0, "description": "Stack frame value", "display": {"fmt": "hex", "digits": 8}}
+            ]
+        },
+        "53": {
+            "name": "BATTERY_VOLTAGE",
+            "description": "Battery voltage",
+            "fields": [
+                {"name": "voltage", "type": "uint16_t", "description": "Battery voltage (milliVolts)", "display": {"postfix": "mV"}}
+            ]
+        },
+        "54": {
+            "name": "BATTERY_SOC",
+            "description": "Battery state of charge",
+            "fields": [
+                {"name": "soc", "type": "uint8_t", "description": "State of charge (percent)", "display": {"postfix": "%"}}
+            ]
+        },
+        "55": {
+            "name": "STATE_EVENT_SET",
+            "description": "Infuse-IoT application state transitioned from cleared to set",
+            "fields": [
+                {"name": "state", "type": "uint8_t", "description": "Infuse-IoT application event"}
+            ]
+        },
+        "56": {
+            "name": "STATE_EVENT_CLEARED",
+            "description": "Infuse-IoT application state transitioned from set to cleared",
+            "fields": [
+                {"name": "state", "type": "uint8_t", "description": "Infuse-IoT application event"}
+            ]
+        },
+        "57": {
+            "name": "STATE_DURATION",
+            "description": "Duration an Infuse-IoT application state was asserted for",
+            "fields": [
+                {"name": "state", "type": "uint8_t", "description": "Infuse-IoT application event"},
+                {"name": "duration", "type": "uint32_t", "description": "Duration state was asserted for"}
+            ]
+        },
+        "58": {
+            "name": "PCM_16BIT_CHAN_LEFT",
+            "description": "16bit PCM (Audio) data for the left channel",
+            "fields": [
+                {"name": "val", "type": "int16_t", "description": "Left channel sample"}
+            ]
+        },
+        "59": {
+            "name": "PCM_16BIT_CHAN_RIGHT",
+            "description": "16bit PCM (Audio) data for the right channel",
+            "fields": [
+                {"name": "val", "type": "int16_t", "description": "Right channel sample"}
+            ]
+        },
+        "60": {
+            "name": "PCM_16BIT_CHAN_DUAL",
+            "description": "16bit PCM (Audio) data for both the left and right channels",
+            "fields": [
+                {"name": "left", "type": "int16_t", "description": "Left channel sample"},
+                {"name": "right", "type": "int16_t", "description": "Right channel sample"}
+            ]
+        },
+        "61": {
+            "name": "KVS_VALUE_CHANGED",
+            "description": "Record of key value store data updates",
+            "fields": [
+                {"name": "key", "type": "uint16_t", "description": "KV Store key identifier"},
+                {"name": "value", "type": "uint8_t", "num": 0, "description": "New data value, empty for delete, '*' for write-only"}
+            ]
+        },
+        "62": {
+            "name": "AMBIENT_PRESSURE",
+            "description": "Ambient pressure",
+            "fields": [
+                {"name": "pressure", "type": "uint32_t", "description": "Atmospheric pressure (pascals)", "display": {"fmt": "float", "digits": 3, "postfix": "kPA"}, "conversion": {"m": 0.001, "c": 0} }
+            ]
+        }
+    }
+}
