@@ -1,0 +1,25 @@
+{
+  "format": "tdf-decoder-reference-v1",
+  "fixture": "tdf_trailing_non_padding.bin",
+  "byteLength": 7,
+  "sha256": "46b8a04fe11f6067ce66d71b64104d4d453c00338edadf2e5aa16cbdb4a13910",
+  "success": false,
+  "readings": [
+    {
+      "id": 999,
+      "name": null,
+      "rawDataHex": "aa",
+      "timestamp": null,
+      "period": null,
+      "index": null,
+      "decodedPayload": []
+    }
+  ],
+  "error": {
+    "kind": "UnexpectedEof",
+    "offset": null,
+    "id": null,
+    "message": "Block ended before a complete TDF header could be read",
+    "exceptionType": null
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "format": "tdf-decoder-reference-v1",
+  "fixture": "tdf_two_blocks.bin",
+  "byteLength": 1024,
+  "sha256": "f3afe85f4bb2bf188d6568c8575e95dd5946c37b3c9f3538a7d5e44cf79db4f6",
+  "success": true,
+  "readings": [
+    {
+      "id": 999,
+      "name": null,
+      "rawDataHex": "aa",
+      "timestamp": null,
+      "period": null,
+      "index": null,
+      "decodedPayload": []
+    },
+    {
+      "id": 998,
+      "name": null,
+      "rawDataHex": "bbcc",
+      "timestamp": null,
+      "period": null,
+      "index": null,
+      "decodedPayload": []
+    },
+    {
+      "id": 997,
+      "name": null,
+      "rawDataHex": "dd",
+      "timestamp": null,
+      "period": null,
+      "index": null,
+      "decodedPayload": []
+    },
+    {
+      "id": 996,
+      "name": null,
+      "rawDataHex": "112233",
+      "timestamp": null,
+      "period": null,
+      "index": null,
+      "decodedPayload": []
+    }
+  ],
+  "error": null
+}

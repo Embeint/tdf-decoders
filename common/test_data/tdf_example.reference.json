@@ -1,0 +1,411 @@
+{
+  "format": "tdf-decoder-reference-v1",
+  "fixture": "tdf_example.bin",
+  "byteLength": 512,
+  "sha256": "374b6f99dba787a9bb430835f8610cdf7fec214a9008a79b843e710e442f4e34",
+  "success": true,
+  "readings": [
+    {
+      "id": 2001,
+      "name": null,
+      "rawDataHex": "aabbcc",
+      "timestamp": null,
+      "period": null,
+      "index": null,
+      "decodedPayload": []
+    },
+    {
+      "id": 54,
+      "name": "BATTERY_SOC",
+      "rawDataHex": "42",
+      "timestamp": {
+        "epochTime": 6586368,
+        "gpsSeconds": 100,
+        "fractionalTicks": 32768,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 500000000
+      },
+      "period": null,
+      "index": null,
+      "decodedPayload": [
+        {
+          "type": "BatterySoc",
+          "fields": {
+            "soc": 66
+          }
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "name": "BATTERY_VOLTAGE",
+      "rawDataHex": "a00f",
+      "timestamp": {
+        "epochTime": 6586624,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33024,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 503906250
+      },
+      "period": null,
+      "index": null,
+      "decodedPayload": [
+        {
+          "type": "BatteryVoltage",
+          "fields": {
+            "voltage": 4000
+          }
+        }
+      ]
+    },
+    {
+      "id": 1000,
+      "name": null,
+      "rawDataHex": "1122",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": null,
+      "index": null,
+      "decodedPayload": []
+    },
+    {
+      "id": 54,
+      "name": "BATTERY_SOC",
+      "rawDataHex": "0a141e",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": 0.25,
+      "index": null,
+      "decodedPayload": [
+        {
+          "type": "BatterySoc",
+          "fields": {
+            "soc": 10
+          }
+        },
+        {
+          "type": "BatterySoc",
+          "fields": {
+            "soc": 20
+          }
+        },
+        {
+          "type": "BatterySoc",
+          "fields": {
+            "soc": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": 999,
+      "name": null,
+      "rawDataHex": "100011000f00",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": 0,
+      "index": null,
+      "decodedPayload": []
+    },
+    {
+      "id": 998,
+      "name": null,
+      "rawDataHex": "000001001000010000000100",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": 0,
+      "index": null,
+      "decodedPayload": []
+    },
+    {
+      "id": 997,
+      "name": null,
+      "rawDataHex": "000002000001020000ff0100",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": 0,
+      "index": null,
+      "decodedPayload": []
+    },
+    {
+      "id": 54,
+      "name": "BATTERY_SOC",
+      "rawDataHex": "3742",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": 0.07110595703125,
+      "index": 4660,
+      "decodedPayload": [
+        {
+          "type": "BatterySoc",
+          "fields": {
+            "soc": 55
+          }
+        },
+        {
+          "type": "BatterySoc",
+          "fields": {
+            "soc": 66
+          }
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "name": "LTE_TAC_CELLS",
+      "rawDataHex": "010002000605040308070d0c0b0a10ec",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": null,
+      "index": null,
+      "decodedPayload": [
+        {
+          "type": "LteTacCells",
+          "fields": {
+            "cell": {
+              "mcc": 1,
+              "mnc": 2,
+              "eci": 50595078,
+              "tac": 1800
+            },
+            "earfcn": 168496141,
+            "rsrp": -16,
+            "rsrq": -20,
+            "neighbours": []
+          }
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "name": "LTE_TAC_CELLS",
+      "rawDataHex": "010002000605040308070d0c0b0a10ec141312111615e80346f7242322212625d00750f6",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": null,
+      "index": null,
+      "decodedPayload": [
+        {
+          "type": "LteTacCells",
+          "fields": {
+            "cell": {
+              "mcc": 1,
+              "mnc": 2,
+              "eci": 50595078,
+              "tac": 1800
+            },
+            "earfcn": 168496141,
+            "rsrp": -16,
+            "rsrq": -20,
+            "neighbours": [
+              {
+                "earfcn": 286397204,
+                "pci": 5398,
+                "timeDiff": 1,
+                "rsrp": -70,
+                "rsrq": -9
+              },
+              {
+                "earfcn": 555885348,
+                "pci": 9510,
+                "timeDiff": 2,
+                "rsrp": -80,
+                "rsrq": -10
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "name": "ALGORITHM_CLASS_HISTOGRAM",
+      "rawDataHex": "040302010605",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": null,
+      "index": null,
+      "decodedPayload": [
+        {
+          "type": "AlgorithmClassHistogram",
+          "fields": {
+            "algorithmId": 16909060,
+            "algorithmVersion": 1286,
+            "classes": []
+          }
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "name": "ALGORITHM_CLASS_HISTOGRAM",
+      "rawDataHex": "040302010605070809",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": null,
+      "index": null,
+      "decodedPayload": [
+        {
+          "type": "AlgorithmClassHistogram",
+          "fields": {
+            "algorithmId": 16909060,
+            "algorithmVersion": 1286,
+            "classes": [
+              7,
+              8,
+              9
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "name": "BLUETOOTH_RSSI",
+      "rawDataHex": "01010203040506c4",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": null,
+      "index": null,
+      "decodedPayload": [
+        {
+          "type": "BluetoothRssi",
+          "fields": {
+            "address": {
+              "type": 1,
+              "val": 6618611909121
+            },
+            "rssi": -60
+          }
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "name": "WIFI_AP_INFO",
+      "rawDataHex": "0102030405060bd6",
+      "timestamp": {
+        "epochTime": 6586640,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33040,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 504150390
+      },
+      "period": null,
+      "index": null,
+      "decodedPayload": [
+        {
+          "type": "WifiApInfo",
+          "fields": {
+            "bssid": {
+              "val": 1108152157446
+            },
+            "channel": 11,
+            "rsrp": -42
+          }
+        }
+      ]
+    },
+    {
+      "id": 1001,
+      "name": null,
+      "rawDataHex": "33",
+      "timestamp": {
+        "epochTime": 6586624,
+        "gpsSeconds": 100,
+        "fractionalTicks": 33024,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 503906250
+      },
+      "period": null,
+      "index": null,
+      "decodedPayload": []
+    },
+    {
+      "id": 1002,
+      "name": null,
+      "rawDataHex": "44",
+      "timestamp": {
+        "epochTime": 6586592,
+        "gpsSeconds": 100,
+        "fractionalTicks": 32992,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 503417968
+      },
+      "period": null,
+      "index": null,
+      "decodedPayload": []
+    },
+    {
+      "id": 1003,
+      "name": null,
+      "rawDataHex": "5566",
+      "timestamp": {
+        "epochTime": 6586592,
+        "gpsSeconds": 100,
+        "fractionalTicks": 32992,
+        "unixSeconds": 315964882,
+        "unixNanoseconds": 503417968
+      },
+      "period": 2,
+      "index": null,
+      "decodedPayload": []
+    }
+  ],
+  "error": null
+}
