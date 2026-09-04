@@ -48,3 +48,23 @@ python3 common/scripts/generate_decoders.py common/test_data/extension_definitio
 ```
 
 Then run the relevant tests.
+
+### Generating into a downstream project
+
+Downstream projects that maintain their own extension definitions can generate
+decoder sources straight into their own tree, leaving this repository untouched:
+
+```sh
+python3 common/scripts/generate_decoders.py path/to/extensions.json \
+    --language csharp \
+    --csharp-output ../my-project/src/Generated/TdfDecoders.cs \
+    --csharp-namespace My.Project.Tdf
+```
+
+- `--language {all,csharp,rust}` selects which sources to generate. Restricting
+  to `csharp` skips the Rust output and its `rustfmt` invocation.
+- `--csharp-output` and `--rust-output` set the output file paths. Missing parent
+  directories are created. Both default to the in-repo generated sources.
+- `--csharp-namespace` sets the namespace of the generated C# source, so a
+  downstream copy does not collide with this repository's `TdfDecoders` types.
+  Defaults to `TdfDecoders`.

@@ -20,6 +20,7 @@ COMMON_DIR = REPO_ROOT / "common"
 TEMPLATE_DIR = COMMON_DIR / "scripts" / "templates"
 CS_OUTPUT_DIR = REPO_ROOT / "csharp" / "generated"
 RUST_OUTPUT_DIR = REPO_ROOT / "rust" / "src" / "generated"
+DEFAULT_CS_NAMESPACE = "TdfDecoders"
 
 CS_SCALAR_TYPES = {
     "char": "char",
@@ -95,7 +96,48 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help="Optional TDF definition extension JSON to merge with common/tdf.json.",
     )
+    parser.add_argument(
+        "--language",
+        choices=("all", "csharp", "rust"),
+        default="all",
+        help="Which decoder sources to generate (default: all).",
+    )
+    parser.add_argument(
+        "--csharp-output",
+        type=Path,
+        default=None,
+        help=(
+            "Path to write the generated C# source to. "
+            f"Defaults to {CS_OUTPUT_DIR.relative_to(REPO_ROOT)}/TdfDecoders.cs."
+        ),
+    )
+    parser.add_argument(
+        "--csharp-namespace",
+        default=DEFAULT_CS_NAMESPACE,
+        help=f"Namespace for the generated C# source (default: {DEFAULT_CS_NAMESPACE}).",
+    )
+    parser.add_argument(
+        "--rust-output",
+        type=Path,
+        default=None,
+        help=(
+            "Path to write the generated Rust source to. "
+            f"Defaults to {RUST_OUTPUT_DIR.relative_to(REPO_ROOT)}/decoders.rs."
+        ),
+    )
     return parser.parse_args()
+
+
+def display_path(path: Path) -> str:
+    """Render an output path relative to the repository when it lives inside it.
+
+    Generated sources can be written outside the repository, where
+    ``Path.relative_to`` raises instead of returning a display string.
+    """
+    try:
+        return str(path.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path)
 
 
 def load_definitions(path: Path, *, parse_float=None) -> dict:
@@ -542,8 +584,10 @@ def main() -> None:
         lstrip_blocks=True,
     )
 
+    generate_csharp = args.language in ("all", "csharp")
+    generate_rust = args.language in ("all", "rust")
+
     data = load_merged_definitions(args.extension)
-    rust_data = load_merged_definitions(args.extension, parse_float=decimal.Decimal)
 
     struct_sizes: dict[str, int] = {}
     for name, definition in data.get("structs", {}).items():
@@ -580,20 +624,27 @@ def main() -> None:
             }
         )
 
-    output_path = CS_OUTPUT_DIR / "TdfDecoders.cs"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    if generate_csharp:
+        output_path = args.csharp_output or (CS_OUTPUT_DIR / "TdfDecoders.cs")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    template = cs_env.get_template("decoder.cs.jinja2")
-    output_path.write_text(
-        template.render(
-            definitions=definitions,
-            has_hex_conversion=has_hex_conversion(data),
-            readings=readings,
-            structs=structs,
-        ),
-        encoding="utf-8",
-    )
-    print(f"Wrote {output_path.relative_to(REPO_ROOT)}")
+        template = cs_env.get_template("decoder.cs.jinja2")
+        output_path.write_text(
+            template.render(
+                definitions=definitions,
+                has_hex_conversion=has_hex_conversion(data),
+                namespace=args.csharp_namespace,
+                readings=readings,
+                structs=structs,
+            ),
+            encoding="utf-8",
+        )
+        print(f"Wrote {display_path(output_path)}")
+
+    if not generate_rust:
+        return
+
+    rust_data = load_merged_definitions(args.extension, parse_float=decimal.Decimal)
 
     for _tdf_id, definition in rust_data["definitions"].items():
         definition["rust_payload_type_name"] = pascal_case(definition["name"])
@@ -610,7 +661,7 @@ def main() -> None:
             )
         definition["rust_decode_fields"] = ",\n                ".join(decode_fields)
 
-    rust_output_path = RUST_OUTPUT_DIR / "decoders.rs"
+    rust_output_path = args.rust_output or (RUST_OUTPUT_DIR / "decoders.rs")
     rust_output_path.parent.mkdir(parents=True, exist_ok=True)
     rust_template = rust_env.get_template("decoder.rs.jinja")
     rust_output_path.write_text(
@@ -622,7 +673,7 @@ def main() -> None:
         encoding="utf-8",
     )
     subprocess.run(["rustfmt", rust_output_path], check=True)
-    print(f"Wrote {rust_output_path.relative_to(REPO_ROOT)}")
+    print(f"Wrote {display_path(rust_output_path)}")
 
 
 if __name__ == "__main__":
